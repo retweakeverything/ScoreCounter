@@ -33,7 +33,6 @@
             android:exported="true"
             android:forceDarkAllowed="false"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -49,6 +48,10 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
+        <activity
+            android:name=".settings.HelpRemoteActivity"
+            android:forceDarkAllowed="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".settings.AboutActivity"
             android:forceDarkAllowed="false"

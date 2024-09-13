@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#b0bec5"
+    tools:context=".settings.AboutActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="270dp"
+        android:background="#b0bec5"
+        android:theme="@style/ThemeOverlay.AppCompat.Light"
+        app:elevation="0dp"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:statusBarScrim="#b0bec5">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/toolbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:collapsedTitleTextColor="@color/primary_material_light"
+            app:contentScrim="#b0bec5"
+            app:expandedTitleGravity="top"
+            app:expandedTitleTextColor="@color/primary_material_light"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+            app:statusBarScrim="#F3BFA9"
+            app:toolbarId="@+id/toolbar">
+
+            <ImageView
+                android:id="@+id/image_hero"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:scaleType="centerInside"
+                android:src="@drawable/scorecounterinaction"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.5" />
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin" />
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/contentRemoteMappingHeader"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/o400"
+                android:lineSpacingMultiplier="1.33"
+                android:padding="@dimen/padding_large"
+                android:text="@string/about_remote_mapping_header"
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                android:textColor="@color/primary_text_default_material_light"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/contentRemoteMapping"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/o400"
+                android:lineSpacingExtra="16sp"
+                android:padding="@dimen/padding_large"
+                android:text="@string/about_remote_mapping"
+                android:textAlignment="textStart"
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                android:textColor="@color/primary_text_default_material_light"
+                android:textSize="12sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonMoreHelp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/padding_large"
+                android:drawableTint="#182e3f"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:minHeight="@dimen/list_single_line_min_height"
+                android:paddingHorizontal="@dimen/padding_large"
+                android:text="@string/about_remote_need_more_help"
+                android:textAppearance="?attr/textAppearanceBody1"
+                android:textColor="#182e3f"
+                app:cornerRadius="@dimen/material_button_full_round_corner_radius"
+                app:icon="?android:attr/actionModeWebSearchDrawable"
+                app:iconGravity="textEnd"
+                app:strokeColor="#182e3f" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="240dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:alpha=".8"
+                android:src="@drawable/remote_hand_size" />
+
+            <TextView
+                android:id="@+id/contentRemoteCost"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/o400"
+                android:lineSpacingMultiplier="1.33"
+                android:padding="@dimen/padding_large"
+                android:text="@string/about_remote_costing"
+                android:textAlignment="center"
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                android:textColor="@color/primary_text_default_material_light"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonHelpBuy"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/padding_large"
+                android:drawableTint="#182e3f"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:minHeight="@dimen/list_single_line_min_height"
+                android:paddingHorizontal="@dimen/padding_large"
+                android:text="@string/about_remote_where_to_buy"
+                android:textAppearance="?attr/textAppearanceBody1"
+                android:textColor="#182e3f"
+                app:cornerRadius="@dimen/material_button_full_round_corner_radius"
+                app:icon="?android:attr/actionModeWebSearchDrawable"
+                app:iconGravity="textEnd"
+                app:strokeColor="#182e3f" />
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_donate_it"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/spacing_large"
+                android:paddingVertical="@dimen/spacing_big"
+                android:text="@string/about_remote_support_me"
+                android:textAllCaps="false"
+                android:textColor="?attr/colorOnPrimary"
+                android:textSize="@dimen/font_title"
+                app:backgroundTint="@color/colorPrimaryVariant"
+                app:cornerRadius="@dimen/material_button_full_round_corner_radius" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

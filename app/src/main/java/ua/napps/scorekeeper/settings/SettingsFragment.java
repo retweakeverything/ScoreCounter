@@ -34,6 +34,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
         contentView.findViewById(R.id.tv_donate).setOnClickListener(this);
         contentView.findViewById(R.id.tv_open_settings).setOnClickListener(this);
+        contentView.findViewById(R.id.tv_help_remote).setOnClickListener(this);
         contentView.findViewById(R.id.tv_request_feature).setOnClickListener(this);
         contentView.findViewById(R.id.tv_rate_app).setOnClickListener(this);
         contentView.findViewById(R.id.tv_about).setOnClickListener(this);
@@ -46,6 +47,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.tv_help_remote:
+                HelpRemoteActivity.start(requireActivity());
+                break;
             case R.id.tv_open_settings:
                 showBottomSheet();
                 break;

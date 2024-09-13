@@ -10,6 +10,7 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -142,8 +143,21 @@ public class CountersFragment extends Fragment implements CounterActionCallback,
         }
         toolbarTitle.setOnClickListener(v -> switchTopLogic());
 
-        spanningLinearLayoutManager = new SpanningLinearLayoutManager(requireContext());
+        int orientation = getResources().getConfiguration().orientation;
+        int linearLayoutManagerOrientation = (orientation == Configuration.ORIENTATION_LANDSCAPE)
+                ? RecyclerView.HORIZONTAL
+                : RecyclerView.VERTICAL;
+
+        // Setting Text and counter orientation
+        spanningLinearLayoutManager = new SpanningLinearLayoutManager(requireContext(), linearLayoutManagerOrientation, false);
         linearLayoutManager = new LinearLayoutManager(requireContext());
+
+        // Hiding the bottom toolbar as toolbar is part of Counter Fragment.
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            toolbar.setVisibility(View.GONE);
+        } else {
+            toolbar.setVisibility(View.VISIBLE);
+        }
 
         countersAdapter = new CountersAdapter(this, this);
         recyclerView = contentView.findViewById(R.id.recycler_view);
@@ -404,6 +418,33 @@ public class CountersFragment extends Fragment implements CounterActionCallback,
         } else {
             showCounterStepDialog(counter, position, mode);
         }
+    }
+
+    public boolean increaseCounter(int counterNumber) {
+        List<Counter> counterList = viewModel.getCounters().getValue();
+        if (counterList!=null && !counterList.isEmpty() && counterNumber < counterList.size()) {
+            handleSingleStep(counterList.get(counterNumber), MODE_INCREASE_VALUE);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean decreaseCounter(int counterNumber) {
+        List<Counter> counterList = viewModel.getCounters().getValue();
+        if (counterList!=null && !counterList.isEmpty() && counterNumber < counterList.size()) {
+            handleSingleStep(counterList.get(counterNumber), MODE_DECREASE_VALUE);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean resetAllCounters() {
+        List<Counter> counterList = viewModel.getCounters().getValue();
+        if (counterList!=null && !counterList.isEmpty()) {
+            viewModel.resetAll();
+            return true;
+        }
+        return false;
     }
 
     private void handleSingleStep(Counter counter, int mode) {

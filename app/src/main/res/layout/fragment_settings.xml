@@ -69,6 +69,20 @@
         </FrameLayout>
 
         <TextView
+            android:id="@+id/tv_help_remote"
+            style="@style/TwoLinesStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorSurface"
+            android:drawablePadding="@dimen/padding_normal"
+            android:fontFamily="@font/o600"
+            android:text="@string/settings_help_remote"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            app:drawableEndCompat="@drawable/ic_arrow_right"
+            app:drawableStartCompat="@android:drawable/stat_sys_data_bluetooth"
+            app:drawableTint="@color/colorPrimaryVariant" />
+
+        <TextView
             android:id="@+id/tv_about"
             style="@style/TwoLinesStyle"
             android:layout_width="match_parent"
@@ -79,6 +93,7 @@
             android:text="@string/settings_about"
             android:textAppearance="?attr/textAppearanceHeadline6"
             app:drawableEndCompat="@drawable/ic_arrow_right"
+            app:drawableStartCompat="@android:drawable/ic_menu_myplaces"
             app:drawableTint="?attr/colorPrimary" />
 
         <TextView
@@ -92,6 +107,7 @@
             android:text="@string/common_settings"
             android:textAppearance="?attr/textAppearanceHeadline6"
             app:drawableEndCompat="@drawable/ic_arrow_right"
+            app:drawableStartCompat="@android:drawable/ic_menu_preferences"
             app:drawableTint="?attr/colorPrimary" />
 
         <com.google.android.material.divider.MaterialDivider

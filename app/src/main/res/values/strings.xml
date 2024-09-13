@@ -68,4 +68,25 @@
     <string name="settings_switch_tap_logic">Swap short and long press</string>
     <string name="share_snippet">No need to look for a pen and paper. Get the free Android app</string>
     <string name="simple_edit_value_hint">Enter value</string>
+    <string name="settings_help_remote" translatable="false">Remote Control Help</string>
+    <string name="about_remote_mapping_header" translatable="false" >Remote Contols</string>
+    <string name="about_remote_mapping" translatable="false" >
+1. Each Bluetooth Remote Shutter buttons(2) controls 1 counter each.\n
+2. Press Button 1 to add points to the 1st counter.\n
+3. Press Button 2 to add points to the 2nd counter.\n
+4. Double-click Button 1 to subtract 1 point from the 1st counter.\n
+5. Double-click Button 2 to subtract 1 point from the 2nd counter.\n
+6. Press and hold either Button 1 or 2 to reset all scores.\n
+    </string>
+    <string name="about_remote_costing" translatable="false" >
+        General Cost : 2$-3$ USD or 150₹-200₹
+    </string>
+    <string name="about_remote_need_more_help" translatable="false" >
+        Need more help or\nIssues with remote ?
+    </string>
+    <string name="about_remote_where_to_buy" translatable="false" >
+        Where to buy?
+    </string>
+    <string name="about_remote_support_me" translatable="false">Support Dev ReTweak</string>
+
 </resources>

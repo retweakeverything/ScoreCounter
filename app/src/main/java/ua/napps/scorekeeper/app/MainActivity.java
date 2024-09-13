@@ -4,8 +4,13 @@ import static ua.napps.scorekeeper.settings.LocalSettings.THEME_DARK;
 import static ua.napps.scorekeeper.settings.LocalSettings.THEME_LIGHT;
 
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.KeyEvent;
+import android.view.View;
 import android.view.WindowManager;
 
 import androidx.activity.OnBackPressedCallback;
@@ -46,9 +51,174 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private boolean isKeepScreenOn;
     private BottomNavigationView bottomNavigationBar;
 
+    // Time intervals
+    private static final long DOUBLE_PRESS_INTERVAL = 300; // Max time in ms for double click
+    private static final long LONG_PRESS_THRESHOLD = 500;  // Min time in ms for long press
+
+    // Handler and flags
+    private Handler handler;
+    private long lastKeyDownTime = 0;
+    private boolean isDoubleClick = false;
+    private boolean isSingleClickPending = false;
+    private boolean isLongPress = false;
+
+    // Runnable actions
+    private Runnable singleClickRunnable;
+    private Runnable longPressRunnable;
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            // If already long pressed, ignore further actions
+            if (isLongPress) return true;
+
+            lastKeyDownTime = System.currentTimeMillis();
+            startLongPressDetection(keyCode);
+
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            // Cancel long press detection
+            handler.removeCallbacks(longPressRunnable);
+
+            if (isLongPress) {
+                // Reset long press state and exit early if long press was detected
+                isLongPress = false;
+                return true;
+            }
+
+            long keyUpTime = System.currentTimeMillis();
+            long pressDuration = keyUpTime - lastKeyDownTime;
+
+            // If it's a short press, check for double click or single click
+            if (pressDuration < LONG_PRESS_THRESHOLD) {
+                handleClick(keyCode);
+            }
+
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
+    }
+
+    private void handleClick(int keyCode) {
+        if (isSingleClickPending) {
+            // Double click detected
+            handler.removeCallbacks(singleClickRunnable); // Cancel pending single click
+            isSingleClickPending = false;
+            isDoubleClick = true;
+
+            if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                onVolumeDownDoubleClick();
+            } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+                onVolumeUpDoubleClick();
+            }
+        } else {
+            // Start waiting for a possible double click
+            isSingleClickPending = true;
+            isDoubleClick = false;
+
+            singleClickRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    if (isSingleClickPending && !isDoubleClick) {
+                        // Single click confirmed
+                        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                            onVolumeDownSingleClick();
+                        } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+                            onVolumeUpSingleClick();
+                        }
+                    }
+                    isSingleClickPending = false; // Reset flag after action
+                }
+            };
+            handler.postDelayed(singleClickRunnable, DOUBLE_PRESS_INTERVAL); // Wait to confirm single click
+        }
+    }
+
+    private void startLongPressDetection(int keyCode) {
+        // Long press detection logic
+        longPressRunnable = new Runnable() {
+            @Override
+            public void run() {
+                isLongPress = true;
+                isSingleClickPending = false; // Cancel pending single click
+                handler.removeCallbacks(singleClickRunnable); // Cancel single click
+                if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                    onVolumeDownLongPress();
+                } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+                    onVolumeUpLongPress();
+                }
+            }
+        };
+        handler.postDelayed(longPressRunnable, LONG_PRESS_THRESHOLD); // Schedule long press detection
+    }
+
+    private void onVolumeDownSingleClick() {
+        // Add logic for Volume Down single click
+        CountersFragment counterFragment = getCounterFragment();
+        if (counterFragment != null) {
+            counterFragment.increaseCounter(1);
+        }
+    }
+
+    private void onVolumeDownDoubleClick() {
+        // Add logic for Volume Down double click
+        CountersFragment counterFragment = getCounterFragment();
+        if (counterFragment != null) {
+            counterFragment.decreaseCounter(1);
+        }
+    }
+
+    private void onVolumeUpSingleClick() {
+        // Add logic for Volume Up single click
+        CountersFragment counterFragment = getCounterFragment();
+        if (counterFragment != null) {
+            counterFragment.increaseCounter(0);
+        }
+    }
+
+    private void onVolumeUpDoubleClick() {
+        // Add logic for Volume Up double click
+        CountersFragment counterFragment = getCounterFragment();
+        if (counterFragment != null) {
+            counterFragment.decreaseCounter(0);
+        }
+    }
+
+    private void onVolumeDownLongPress() {
+        // Add logic for Volume Down long press
+        CountersFragment counterFragment = getCounterFragment();
+        if (counterFragment != null) {
+            counterFragment.resetAllCounters();
+        }
+    }
+
+    private void onVolumeUpLongPress() {
+        // Add logic for Volume Up long press
+        CountersFragment counterFragment = getCounterFragment();
+        if (counterFragment != null) {
+            counterFragment.resetAllCounters();
+        }
+    }
+
+
+    private CountersFragment getCounterFragment() {
+        Fragment f = getSupportFragmentManager().findFragmentByTag(currentFragmentTag);
+        if (f instanceof CountersFragment) {
+            return ((CountersFragment) f);
+        }
+        return null;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        handler = new Handler();
         isKeepScreenOn = LocalSettings.isKeepScreenOnEnabled();
         if (savedInstanceState != null) {
             currentDiceRoll = savedInstanceState.getInt(STATE_CURRENT_DICE_ROLL);
@@ -65,12 +235,19 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         bottomNavigationBar = findViewById(R.id.bottom_navigation);
         bottomNavigationBar.setSelectedItemId(R.id.counters);
 
+        onRotationEnableFullScreenMode();
+
         bottomNavigationBar.setOnItemSelectedListener(item -> {
+            // Setting orientation as Portrait to avoid messing up the UI any other tab.
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
             switch (item.getItemId()) {
                 case R.id.counters:
                     switchFragment(TAGS[0]);
                     getWindow().setStatusBarColor(ContextCompat.getColor(this,R.color.primaryBackground));
                     ViewUtil.setLightMode(this, !nightModeActive);
+
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
                     break;
                 case R.id.dices:
                     switchFragment(TAGS[1]);
@@ -115,6 +292,33 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 }
             }
         });
+    }
+
+    private void onRotationEnableFullScreenMode() {
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            // Hiding the large Bottom Bar
+            bottomNavigationBar.setVisibility(View.GONE);
+
+            // Make the app full screen in landscape mode
+            getWindow().setFlags(
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN
+            );
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+        } else {
+            // Showing everything back - first the large Bottom Bar
+            bottomNavigationBar.setVisibility(View.VISIBLE);
+
+            // Restore the app to its default state in portrait mode
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_VISIBLE);
+        }
     }
 
     private void applyAppTheme() {
